@@ -1,25 +1,33 @@
 package commands
 
 import (
-    "fmt"
-    "os/exec"
-    "github.com/spf13/cobra"
-    "github.com/aaronjoju07/toolr/internal/registry"
+	"fmt"
+	"github.com/aaronjoju07/toolr/internal/registry"
+	"github.com/spf13/cobra"
+	"os/exec"
+	"strings"
 )
 
 var runCmd = &cobra.Command{
-    Use:   "run [name]",
-    Short: "Run a registered tool",
-    Args:  cobra.MinimumNArgs(1),
-    Run: func(cmd *cobra.Command, args []string) {
-        tool, err := registry.GetTool(args[0])
-        if err != nil {
-            fmt.Println("Error:", err)
-            return
-        }
-        execCmd := exec.Command("sh", "-c", fmt.Sprintf("cd %s && %s", tool.Path, tool.Command))
-        execCmd.Stdout = cmd.OutOrStdout()
-        execCmd.Stderr = cmd.OutOrStderr()
-        execCmd.Run()
-    },
+	Use:   "run [name]",
+	Short: "Run a registered tool",
+	Args:  cobra.MinimumNArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		name := args[0]
+		extraArgs := args[1:]
+
+		tool, err := registry.GetTool(name)
+		if err != nil {
+			fmt.Println("Error:", err)
+			return
+		}
+
+		// Combine the registered command with extra CLI arguments
+		fullCmd := fmt.Sprintf("cd %s && %s %s", tool.Path, tool.Command, strings.Join(extraArgs, " "))
+
+		execCmd := exec.Command("sh", "-c", fullCmd)
+		execCmd.Stdout = cmd.OutOrStdout()
+		execCmd.Stderr = cmd.OutOrStderr()
+		execCmd.Run()
+	},
 }
