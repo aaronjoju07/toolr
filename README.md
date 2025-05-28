@@ -88,7 +88,32 @@ git clone https://github.com/your-username/toolr.git
 cd toolr
 go build -o toolr .
 ```
+#### On macOS/Linux: Move the Binary to /usr/local/bin/
+```bash
+sudo mv toolr /usr/local/bin/
+//verify
+which toolr
+```
+####  On Windows: Move toolr.exe to a permanent directory like:
+```bash
+C:\Users\<YourUsername>\toolr\
+```
+##### Next: Add this directory to your system PATH:
 
+1. Press Windows + R, type sysdm.cpl, hit Enter.
+
+2. Go to Advanced → Environment Variables.
+
+3. Under System variables, find Path, click Edit.
+
+4. Click New and add:
+```bash
+C:\Users\<YourUsername>\toolr\
+```
+##### verify on windows
+```bash
+toolr --help
+```
 ---
 
 ## 🧠 How It Works
